@@ -1,12 +1,9 @@
-function loadPreferredTheme() {
-    const preferredTheme = localStorage.getItem("pref-theme");
-    const isDarkTheme = document.body.classList.contains("dark");
-
-    if (preferredTheme === "light" && isDarkTheme) {
-        document.body.classList.remove('dark')
-    } else if (preferredTheme === "dark" && !isDarkTheme) {
-        document.body.classList.add('dark')
+// The body already reflects defaultTheme; only a saved preference overrides it.
+try {
+    const preferred = localStorage.getItem('pref-theme');
+    if (preferred === 'light' || preferred === 'dark') {
+        document.body.classList.toggle('dark', preferred === 'dark');
     }
+} catch {
+    // Navigation and the configured theme remain usable when storage is blocked.
 }
-
-loadPreferredTheme();

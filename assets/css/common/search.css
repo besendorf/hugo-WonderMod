@@ -36,7 +36,12 @@
     height: 100%;
     top: 0px;
     left: 0px;
-    outline: none;
+    outline: 2px solid transparent;
+}
+
+#searchResults a:focus-visible {
+    outline-color: var(--primary);
+    outline-offset: 3px;
 }
 
 #searchResults .focus {
