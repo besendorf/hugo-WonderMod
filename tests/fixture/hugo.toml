@@ -1,0 +1,29 @@
+# Deliberately malicious title exercises HTML and JSON-LD escaping.
+ignoreLogs = ['warning-goldmark-raw-html']
+baseURL = 'https://example.org/'
+title = 'WonderMod security fixture'
+theme = 'WonderMod'
+defaultContentLanguage = 'en'
+[params]
+  env = 'production'
+  author = 'Example Author'
+  description = 'A "quoted" description <with markup>'
+  defaultTheme = 'dark'
+  ShowCodeCopyButtons = true
+  ShowBreadCrumbs = true
+  ShowReadingTime = true
+  ShowWordCount = true
+  ShowFullTextinRSS = true
+  ShowShareButtons = true
+  showtoc = true
+  UseHugoToc = false
+  [params.schema]
+    publisherType = 'Person'
+  [params.cover]
+    linkFullImages = true
+[markup.highlight]
+  noClasses = false
+  lineNos = true
+  guessSyntax = true
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']

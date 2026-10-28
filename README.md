@@ -1,5 +1,12 @@
 ## WonderMod (PaperMod fork - theme for Hugo)
 
+This is the maintained fork used by [besendorf.org](https://besendorf.org/).
+It starts from Wonderfall/WonderMod `3b0ee00` and imports selected PaperMod
+maintenance changes while retaining WonderMod's hardening. **Hugo 0.158.0 or newer
+is required.** See [MAINTENANCE.md](MAINTENANCE.md) for provenance, security
+requirements and validation commands.
+
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/wonderfall/hugo-WonderMod/master/.github/assets/web-capture.jpeg" title="WonderMod" alt="WonderMod image">
 </p>
@@ -7,9 +14,11 @@
 ### What is this?
 WonderMod is a fork of a theme for [Hugo](https://gohugo.io/) called [PaperMod](https://github.com/adityatelange/hugo-PaperMod) (made by adityatelange), which is based on [Paper](https://github.com/nanxiaobei/hugo-paper/). Since PaperMod isn't interested in a few changes such as **removing inline JavaScript**, which I personally require to harden my websites, I decided to maintain my own fork (I didn't want to keep overwriting a bunch of files as a fork workflow is much cleaner). Don't expect a ton of changes, and unless you know me, you probably don't want to use WonderMod.
 
-When implementing new features, I try to do as much as I can with pure CSS code instead of adding new JavaScript code. I'd like to keep the JavaScript part minimal and that's why WonderMod should be totally usable when disabling JavaScript. WonderMod is also designed with strong CSP headers in mind: no inline JavaScript or style, no calls to third-parties.
+When implementing new features, I try to do as much as I can with pure CSS code instead of adding new JavaScript code. I'd like to keep the JavaScript part minimal and that's why WonderMod should be totally usable when disabling JavaScript. WonderMod is also designed with strong CSP headers in mind: no inline executable JavaScript or styles, and local theme assets. JSON-LD is non-executable structured data. Optional embeds such as the YouTube shortcode still contact their third-party provider; a site CSP can block them.
 
-**This fork is regularly synced with upstream changes from [PaperMod](https://github.com/adityatelange/hugo-PaperMod).** A merging workflow was chosen since rebasing WonderMod's changes every time could be less efficient. As such, commit history is a bit messy, but upstream changes will be merged on a best effort basis.
+This fork selectively adapts changes from [PaperMod](https://github.com/adityatelange/hugo-PaperMod).
+Do not use GitHub's "Sync fork" button to replace it with PaperMod: upstream
+still uses inline executable scripts and inline styles.
 
 ### Main changes
 Current "main" changes are as follows:

@@ -1,0 +1,43 @@
+{{- /* Serialize complete objects so text cannot break out of a JSON-LD block. */ -}}
+{{- $publisherType := site.Params.schema.publisherType | default "Organization" | title -}}
+{{- $publisher := dict "@type" $publisherType "name" site.Title "url" site.Home.Permalink -}}
+{{- $image := site.Params.assets.favicon | default "favicon.ico" | absURL -}}
+{{- if eq $publisherType "Person" -}}
+  {{- $publisher = merge $publisher (dict "image" $image) -}}
+{{- else -}}
+  {{- $publisher = merge $publisher (dict "logo" (dict "@type" "ImageObject" "url" $image)) -}}
+{{- end -}}
+{{- if .IsHome -}}
+  {{- $profiles := slice -}}
+  {{- with site.Params.schema.sameAs -}}
+    {{- $profiles = . -}}
+  {{- else -}}
+    {{- range site.Params.socialIcons -}}{{- $profiles = $profiles | append .url -}}{{- end -}}
+  {{- end -}}
+  {{- $schema := merge $publisher (dict "@context" "https://schema.org" "description" (site.Params.description | default "" | plainify) "sameAs" $profiles) -}}
+  <script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
+{{- else if or .IsPage .IsSection -}}
+  {{- $items := slice -}}
+  {{- range .Ancestors.Reverse -}}
+    {{- $items = $items | append (dict "@type" "ListItem" "position" (add (len $items) 1) "name" .Title "item" .Permalink) -}}
+  {{- end -}}
+  {{- $items = $items | append (dict "@type" "ListItem" "position" (add (len $items) 1) "name" .Title "item" .Permalink) -}}
+  <script type="application/ld+json">{{ dict "@context" "https://schema.org" "@type" "BreadcrumbList" "itemListElement" $items | jsonify | safeJS }}</script>
+  {{- if .IsPage -}}
+    {{- $schema := dict "@context" "https://schema.org" "@type" "BlogPosting" "headline" (.Title | plainify) "name" (.Title | plainify) "description" ((.Description | default .Summary) | plainify) "articleBody" .Plain "wordCount" .WordCount "inLanguage" .Language.Locale "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink) "publisher" $publisher -}}
+    {{- with .Params.keywords | default .Params.tags -}}{{- $schema = merge $schema (dict "keywords" .) -}}{{- end -}}
+    {{- with partial "author.html" . -}}{{- $schema = merge $schema (dict "author" (dict "@type" "Person" "name" .)) -}}{{- end -}}
+    {{- if not .PublishDate.IsZero -}}{{- $schema = merge $schema (dict "datePublished" (.PublishDate.Format "2006-01-02T15:04:05Z07:00")) -}}{{- end -}}
+    {{- if not .Lastmod.IsZero -}}{{- $schema = merge $schema (dict "dateModified" (.Lastmod.Format "2006-01-02T15:04:05Z07:00")) -}}{{- end -}}
+    {{- with .Params.cover.image -}}
+      {{- $src := . | absURL -}}
+      {{- if $.Params.cover.relative -}}{{- $src = path.Join $.RelPermalink . | absURL -}}{{- end -}}
+      {{- $schema = merge $schema (dict "image" $src) -}}
+    {{- else -}}
+      {{- with partial "templates/_funcs/get-page-images" . | first 1 -}}
+        {{- $schema = merge $schema (dict "image" (index . 0).Permalink) -}}
+      {{- end -}}
+    {{- end -}}
+    <script type="application/ld+json">{{ $schema | jsonify | safeJS }}</script>
+  {{- end -}}
+{{- end -}}
